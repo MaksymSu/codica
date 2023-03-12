@@ -21,6 +21,7 @@ import { DataSource } from 'typeorm';
       entities: [Bank],
       autoLoadEntities: true,
       synchronize: true,
+      logging: true
     }),
 
     BanksModule
