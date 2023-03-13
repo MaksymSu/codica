@@ -6,6 +6,8 @@ import { Bank } from './banks/banks.model';
 import { DataSource } from 'typeorm';
 import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/categories.model';
+import { TransactionsModule } from './transactions/transactions.module';
+import { Transaction } from './transactions/transactions.model';
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { Category } from './categories/categories.model';
       username: process.env.POSTGRES_USER,
       password: process.env.POSTGRES_PASSWORD,
       database: process.env.POSTGRES_DB,
-      entities: [Bank, Category],
+      entities: [Bank, Category, Transaction],
       autoLoadEntities: true,
       synchronize: true,
       logging: true
@@ -28,7 +30,9 @@ import { Category } from './categories/categories.model';
 
     BanksModule,
 
-    CategoriesModule
+    CategoriesModule,
+
+    TransactionsModule
   ],
 
 })
