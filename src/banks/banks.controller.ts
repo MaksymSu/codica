@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Put } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Bank } from './banks.model';
 import { BanksService } from './banks.service';
@@ -30,6 +30,27 @@ export class BanksController {
     @Delete('/banks/:id')
     delete(@Param('id') id: number) {
         return this.banksService.delete(id);
+    }
+
+    @ApiOperation({summary: 'Get bank by id'})
+    @ApiResponse({status: 200, type: Bank})
+    @Get('/banks/:id')
+    getById(@Param('id') id: number) {
+        return this.banksService.getOneById(id);
+    }
+
+    @ApiOperation({summary: 'Get bank by name'})
+    @ApiResponse({status: 200, type: Bank})
+    @Get('/banks/name/:name')
+    getByName(@Param('name') name: string) {
+        return this.banksService.getOneByName(name);
+    }
+
+    @ApiOperation({summary: 'Get all banks'})
+    @ApiResponse({status: 200, type: [Bank]})
+    @Get('/banks')
+    getAll() {
+        return this.banksService.getAll();
     }
 }
 

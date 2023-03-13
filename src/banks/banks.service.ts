@@ -21,7 +21,7 @@ export class BanksService {
         }
     }
 
-    async update(dto: UpdateBankDto) {
+    async update(dto: UpdateBankDto): Promise<Bank> {
        try {
             let bank: Bank;
             if (dto.id) {
@@ -44,6 +44,30 @@ export class BanksService {
             return await this.banksRepository.delete(id);
         } catch (err) {
             throw new HttpException('db bank delete error', HttpStatus.INTERNAL_SERVER_ERROR); 
+        }
+    }
+
+    async getOneById(id: number) {
+        try {
+            return await this.banksRepository.findOneByOrFail({id});
+        } catch (err) {
+            throw new HttpException('not found', HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async getOneByName(name: string) {
+        try {
+            return await this.banksRepository.findOneByOrFail({name});
+        } catch (err) {
+            throw new HttpException('not found', HttpStatus.BAD_REQUEST)
+        }
+    }
+
+    async getAll() {
+        try {
+            return await this.banksRepository.find();
+        } catch (err) {
+            throw new HttpException('not found', HttpStatus.BAD_REQUEST)
         }
     }
     
