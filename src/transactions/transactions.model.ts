@@ -9,6 +9,14 @@ export class Transaction {
     @PrimaryGeneratedColumn()
     id: number;
 
+    @ApiProperty({example: true, description: 'true - profitable,  false - consumable'})
+    @Column()
+    type: boolean;
+    
+    @ApiProperty({example: 700, description: 'amount'})
+    @Column()
+    amount: number;
+
     @ApiProperty({example: '2023-03-13 09:12:57.328022', description: 'created at'})
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     createdAt: Date;
@@ -17,9 +25,6 @@ export class Transaction {
     @JoinTable({name: 'transaction-category'})
     categories: Category[];
 
-    @ManyToOne(() => Bank, party => party.transactionsA)
-    party: Bank;
-
-    @ManyToOne(() => Bank, counterparty => counterparty.transactionsB)
-    counterparty: Bank;
+    @ManyToOne(() => Bank, bank => bank.transactions, {onDelete: 'RESTRICT'})
+    bank: Bank;
 }

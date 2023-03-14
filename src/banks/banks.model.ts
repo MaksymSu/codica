@@ -20,9 +20,6 @@ export class Bank {
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     createdAt: Date;
 
-    @OneToMany(() => Transaction, transaction => transaction.party)
-    transactionsA: Transaction[];
-
-    @OneToMany(() => Transaction, transaction => transaction.counterparty)
-    transactionsB: Transaction[];
+    @OneToMany(() => Transaction, transaction => transaction.bank)
+    transactions: Transaction[];
 }

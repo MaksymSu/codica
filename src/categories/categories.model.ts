@@ -8,7 +8,7 @@ export class Category {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ApiProperty({example: 'Deposite', description: 'name'})
+    @ApiProperty({example: 'Food', description: 'name'})
     @Column()
     name: string;
 
