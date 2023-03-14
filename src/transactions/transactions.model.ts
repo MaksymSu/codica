@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Bank } from "src/banks/banks.model";
 import { Category } from "src/categories/categories.model";
-import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
  
 @Entity('transactions')
 export class Transaction {
@@ -13,8 +13,9 @@ export class Transaction {
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     createdAt: Date;
 
-    @ManyToOne(() => Category, category => category.transactions, {onDelete: 'RESTRICT'})
-    category: Category;
+    @ManyToMany(() => Category, category => category.transactions, {onDelete: 'RESTRICT'})
+    @JoinTable({name: 'transaction-category'})
+    categories: Category[];
 
     @ManyToOne(() => Bank, party => party.transactionsA)
     party: Bank;

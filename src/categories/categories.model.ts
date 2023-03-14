@@ -1,6 +1,6 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Transaction } from "src/transactions/transactions.model";
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { Column, CreateDateColumn, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
  
 @Entity('categories')
 export class Category {
@@ -16,6 +16,6 @@ export class Category {
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     createdAt: Date;
 
-    @OneToMany(() => Transaction, transaction => transaction.category)
-    transactions: Transaction[]
+    @ManyToMany(() => Transaction, transaction => transaction.categories)
+    transactions: Transaction[];
 }
