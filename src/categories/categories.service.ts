@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { createQueryBuilder, In, Repository } from 'typeorm';
 import { Category } from './categories.model';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -67,6 +67,26 @@ export class CategoriesService {
         } catch (err) {
             throw new HttpException('not found', HttpStatus.BAD_REQUEST)
         }
+    }
+
+    async getTransactionsByCats(categoriesIds: number[]) {
+        return await this.categoriesRepository.find({
+            where: {
+                id: In(categoriesIds),
+                transactions: {
+                    type: true
+                }
+            },
+            relations: ['transactions'],
+            select: {
+                transactions: {
+                    id: true,
+                    createdAt: true,
+                    type: true
+                }
+            },
+        })
+ 
     }
     
 }
