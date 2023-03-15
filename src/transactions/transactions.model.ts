@@ -21,7 +21,7 @@ export class Transaction {
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     createdAt: Date;
 
-    @ManyToMany(() => Category, category => category.transactions, {onDelete: 'RESTRICT'})
+    @ManyToMany(() => Category, category => category.transactions, {onDelete: 'CASCADE'})
     @JoinTable({name: 'transaction-category'})
     categories: Category[];
 

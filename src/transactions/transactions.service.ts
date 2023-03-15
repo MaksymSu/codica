@@ -1,4 +1,4 @@
-import { forwardRef, HttpException, HttpStatus, Inject, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { BanksService } from 'src/banks/banks.service';
 import { Repository } from 'typeorm';
@@ -28,7 +28,7 @@ export class TransactionsService {
                 name: bank.name,
                 balance: dto.type ? bank.balance + dto.amount : bank.balance - dto.amount
             });
-            
+
             return await this.transactionsRepository.save(transaction);
         } catch (err) {
             throw new HttpException(err.detail, HttpStatus.BAD_REQUEST);
@@ -37,6 +37,15 @@ export class TransactionsService {
 
     async delete(id: number) {
         try {
+            const transaction = await this.transactionsRepository.findOneOrFail({relations: ['bank'], where: {id}} );
+            await this.banksService.update({
+                id: transaction.bank.id,
+                name: transaction.bank.name,
+                balance: !transaction.type ? transaction.bank.balance + transaction.amount
+                 : transaction.bank.balance - transaction.amount
+            });
+
+
             return await this.transactionsRepository.delete(id);
         } catch (err) {
             throw new HttpException('db transaction delete error', HttpStatus.INTERNAL_SERVER_ERROR); 
