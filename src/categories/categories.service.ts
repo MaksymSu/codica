@@ -1,5 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { groupBy } from 'rxjs';
+import { Transaction } from 'src/transactions/transactions.model';
 import { createQueryBuilder, In, Repository } from 'typeorm';
 import { Category } from './categories.model';
 import { CreateCategoryDto } from './dto/create-category.dto';
@@ -70,11 +72,12 @@ export class CategoriesService {
     }
 
     async getTransactionsByCats(categoriesIds: number[]) {
+   /*     
         return await this.categoriesRepository.find({
             where: {
                 id: In(categoriesIds),
                 transactions: {
-                    type: true
+                    type: profitable
                 }
             },
             relations: ['transactions'],
@@ -83,10 +86,24 @@ export class CategoriesService {
                     id: true,
                     createdAt: true,
                     type: true
-                }
+                },
             },
         })
- 
+ */
+
+        return await this.categoriesRepository.createQueryBuilder()
+            .leftJoinAndSelect("transaction-category", "tc", "tc.categoriesId = Category.id")
+            .leftJoinAndSelect("transactions", "tr", "tc.transactionsId = tr.id")
+            .select('SUM(tr.amount)', 'total')
+            .addSelect('Category.name', 'Category')
+            .groupBy('Category.id')
+            //.having('SUM(tr.amount) IS NOT NULL')
+            .where({
+                id: In(categoriesIds),
+            })
+            //.orderBy('tr.type', 'DESC')
+            .getRawMany();
+        
     }
     
 }
