@@ -1,6 +1,7 @@
-import { Body, Controller, Delete, Get, Param, Post } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
+import { GetTransactionsDto } from './dto/get-transactions.dto';
 import { Transaction } from './transactions.model';
 import { TransactionsService } from './transactions.service';
 
@@ -26,7 +27,7 @@ export class TransactionsController {
     @ApiOperation({summary: 'Get all transactions'})
     @ApiResponse({status: 200, type: [Transaction]})
     @Get('/transactions')
-    getAll() {
-        return this.transactionsService.getAll();
+    getAll(@Query() params: GetTransactionsDto) {
+        return this.transactionsService.getAll(params);
     }
 }

@@ -45,16 +45,23 @@ export class TransactionsService {
                  : transaction.bank.balance - transaction.amount
             });
 
-
             return await this.transactionsRepository.delete(id);
         } catch (err) {
             throw new HttpException('db transaction delete error', HttpStatus.INTERNAL_SERVER_ERROR); 
         }
     }
 
-    async getAll() {
+    async getAll(params: any) {
         try {
-            return await this.transactionsRepository.find({ relations: ['categories', 'bank'] });
+            const cond = {
+                relations: ['categories', 'bank']
+            }
+
+            if ( params.order ) cond['order'] = { createdAt: params.order };
+            if ( params.offset ) cond['skip'] = params.offset;
+            if ( params.limit ) cond['take'] = params.limit;
+            
+            return await this.transactionsRepository.find(cond);
         } catch (err) {
             throw new HttpException(err.details, HttpStatus.BAD_REQUEST)
         }
