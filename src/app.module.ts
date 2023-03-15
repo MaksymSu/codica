@@ -8,6 +8,7 @@ import { CategoriesModule } from './categories/categories.module';
 import { Category } from './categories/categories.model';
 import { TransactionsModule } from './transactions/transactions.module';
 import { Transaction } from './transactions/transactions.model';
+import { StatisticsModule } from './statistics/statistics.module';
 
 @Module({
   imports: [
@@ -32,7 +33,9 @@ import { Transaction } from './transactions/transactions.model';
 
     CategoriesModule,
 
-    TransactionsModule
+    TransactionsModule,
+
+    StatisticsModule
   ],
 
 })
