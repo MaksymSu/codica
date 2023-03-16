@@ -1,8 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { groupBy } from 'rxjs';
-import { Transaction } from 'src/transactions/transactions.model';
-import { createQueryBuilder, In, LessThan, MoreThan, Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import { Category } from './categories.model';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -91,7 +89,6 @@ export class CategoriesService {
             })
             .andWhere(`tr.createdAt <= '${toPeriod}'`)
             .andWhere(`tr.createdAt >= '${fromPeriod}'`)
-            //.andWhere(`tr.type = ${profitable}`);
             switch (profitable) {
                 case 1: return res.andWhere('tr.type = true').getRawMany();
                 case 2: return res.andWhere('tr.type = false').getRawMany();

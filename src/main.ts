@@ -1,4 +1,3 @@
-import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { AppModule } from './app.module';
@@ -10,10 +9,9 @@ async function bootstrap() {
 
   const config = new DocumentBuilder()
   .setTitle('Codica test api')
-  .setDescription('transactions')
+  .setDescription('It provides some services to store and handle transactions')
   .setVersion('1.0.0')
-  .addTag('LuckyBot')
-  //.addBearerAuth(undefined, 'defaultBearerAuth')
+  .addTag('Transactions API')
   .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('/api/docs', app, document);

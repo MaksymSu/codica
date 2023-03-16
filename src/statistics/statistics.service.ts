@@ -1,20 +1,17 @@
 import { Injectable } from '@nestjs/common';
-import { BanksService } from 'src/banks/banks.service';
 import { CategoriesService } from 'src/categories/categories.service';
-import { TransactionsService } from 'src/transactions/transactions.service';
 import { GetStatisticsDto } from './dto/get-statistics.dto';
 
 @Injectable()
 export class StatisticsService {
     constructor(
-        private banksService: BanksService,
         private categoriesService: CategoriesService,
-        private transactionService: TransactionsService
     ) {}
 
     async getStats(dto: GetStatisticsDto) {
         if (process.env.TRANSACTION_PROFITABLE_BY_TYPE_FIELD === 'false') {
-            return await this.categoriesService.getTransactionsByCats(dto.categoriesIds, dto.fromPeriod, dto.toPeriod)
+            const result  = await this.categoriesService.getTransactionsByCats(dto.categoriesIds, dto.fromPeriod, dto.toPeriod);
+            return result.map( cat => {return {[cat.name]: cat.total}});
         }
 
         if (process.env.TRANSACTION_PROFITABLE_BY_TYPE_FIELD === 'true') {
@@ -28,13 +25,12 @@ export class StatisticsService {
         }
     }
 
-    private getBalance(pluses, minuses) {
+    private getBalance(pluses: any, minuses: any) {
         interface Category {
             id: number;
             name: string;
             total: string;
           }
-
           
           interface CategoryData {
             profit?: number;

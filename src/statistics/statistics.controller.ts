@@ -12,7 +12,7 @@ class Statistics {
 export class StatisticsController {
     constructor(private statisticsService: StatisticsService) {}
     
-    @ApiOperation({summary: 'Add new transaction'})
+    @ApiOperation({summary: 'Get total balances by categories'})
     @ApiResponse({status: 201, type: Statistics})
     @Post('statistics')
     createCategory(@Body() dto: GetStatisticsDto) {
