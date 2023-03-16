@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, Param, Post, Query } from '@nestjs/common';
+import { Body, Controller, Delete, Get, Param, Post, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { ApiOperation, ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateTransactionDto } from './dto/create-transaction.dto';
 import { GetTransactionsDto } from './dto/get-transactions.dto';
@@ -10,10 +10,10 @@ import { TransactionsService } from './transactions.service';
 export class TransactionsController {
     constructor(private transactionsService: TransactionsService) {}
     
-    @ApiOperation({summary: 'Add new transaction'})
+    @ApiOperation({summary: 'Add new transaction webhook'})
     @ApiResponse({status: 201, type: Transaction})
-    @Post('transactions')
-    createCategory(@Body() dto: CreateTransactionDto) {
+    @Post('/transactions/webhook')
+    createTransaction(@Body() dto: CreateTransactionDto) {
         return this.transactionsService.create(dto);
     }
 

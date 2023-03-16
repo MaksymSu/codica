@@ -9,15 +9,15 @@ export class Transaction {
     @PrimaryGeneratedColumn()
     id: number;
 
-    @ApiProperty({example: true, description: 'true - profitable,  false - consumable'})
+    @ApiProperty({example: true, description: 'true - profitable,  false - consumable', required: true})
     @Column()
     type: boolean;
     
-    @ApiProperty({example: 700, description: 'amount'})
+    @ApiProperty({example: 700, description: 'amount', required: true})
     @Column()
     amount: number;
 
-    @ApiProperty({example: '2023-03-13 09:12:57.328022', description: 'created at'})
+    @ApiProperty({example: () => "CURRENT_TIMESTAMP(6)", description: 'created at', required: true})
     @CreateDateColumn({ type: "timestamp", default: () => "CURRENT_TIMESTAMP(6)" })
     createdAt: Date;
 

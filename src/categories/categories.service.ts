@@ -73,6 +73,7 @@ export class CategoriesService {
 
     async getTransactionsByCats(categoriesIds: number[], fromPeriod: Date, toPeriod: Date) {
 
+        try {
         return await this.categoriesRepository.createQueryBuilder()
             .leftJoinAndSelect("transaction-category", "tc", "tc.categoriesId = Category.id")
             .leftJoinAndSelect("transactions", "tr", "tc.transactionsId = tr.id")
@@ -85,6 +86,9 @@ export class CategoriesService {
             .andWhere(`tr.createdAt <= '${toPeriod}'`)
             .andWhere(`tr.createdAt >= '${fromPeriod}'`)
             .getRawMany();
+        } catch (err) {
+            throw new HttpException('wrong query', HttpStatus.BAD_REQUEST)
+        }
     }
     
 }
