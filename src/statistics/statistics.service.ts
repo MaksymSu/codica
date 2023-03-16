@@ -13,6 +13,6 @@ export class StatisticsService {
     ) {}
 
     async getStats(dto: GetStatisticsDto) {
-        return this.categoriesService.getTransactionsByCats(dto.categoriesIds)
+        return this.categoriesService.getTransactionsByCats(dto.categoriesIds, dto.fromPeriod, dto.toPeriod)
     }
 }

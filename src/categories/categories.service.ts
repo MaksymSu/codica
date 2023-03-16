@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { groupBy } from 'rxjs';
 import { Transaction } from 'src/transactions/transactions.model';
-import { createQueryBuilder, In, Repository } from 'typeorm';
+import { createQueryBuilder, In, LessThan, MoreThan, Repository } from 'typeorm';
 import { Category } from './categories.model';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -71,25 +71,7 @@ export class CategoriesService {
         }
     }
 
-    async getTransactionsByCats(categoriesIds: number[]) {
-   /*     
-        return await this.categoriesRepository.find({
-            where: {
-                id: In(categoriesIds),
-                transactions: {
-                    type: profitable
-                }
-            },
-            relations: ['transactions'],
-            select: {
-                transactions: {
-                    id: true,
-                    createdAt: true,
-                    type: true
-                },
-            },
-        })
- */
+    async getTransactionsByCats(categoriesIds: number[], fromPeriod: Date, toPeriod: Date) {
 
         return await this.categoriesRepository.createQueryBuilder()
             .leftJoinAndSelect("transaction-category", "tc", "tc.categoriesId = Category.id")
@@ -97,13 +79,12 @@ export class CategoriesService {
             .select('SUM(tr.amount)', 'total')
             .addSelect('Category.name', 'Category')
             .groupBy('Category.id')
-            //.having('SUM(tr.amount) IS NOT NULL')
             .where({
-                id: In(categoriesIds),
+                id: In(categoriesIds)
             })
-            //.orderBy('tr.type', 'DESC')
+            .andWhere(`tr.createdAt <= '${toPeriod}'`)
+            .andWhere(`tr.createdAt >= '${fromPeriod}'`)
             .getRawMany();
-        
     }
     
 }
