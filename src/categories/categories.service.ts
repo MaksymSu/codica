@@ -71,21 +71,33 @@ export class CategoriesService {
         }
     }
 
-    async getTransactionsByCats(categoriesIds: number[], fromPeriod: Date, toPeriod: Date) {
+    async getTransactionsByCats(
+        categoriesIds: number[], 
+        fromPeriod: Date,
+        toPeriod: Date,
+        profitable: number = 0 
+        ) {
 
         try {
-        return await this.categoriesRepository.createQueryBuilder()
+            const res =  await this.categoriesRepository.createQueryBuilder()
             .leftJoinAndSelect("transaction-category", "tc", "tc.categoriesId = Category.id")
             .leftJoinAndSelect("transactions", "tr", "tc.transactionsId = tr.id")
             .select('SUM(tr.amount)', 'total')
-            .addSelect('Category.name', 'Category')
+            .addSelect('Category.name', 'name')
+            .addSelect('Category.id', 'id')
             .groupBy('Category.id')
             .where({
                 id: In(categoriesIds)
             })
             .andWhere(`tr.createdAt <= '${toPeriod}'`)
             .andWhere(`tr.createdAt >= '${fromPeriod}'`)
-            .getRawMany();
+            //.andWhere(`tr.type = ${profitable}`);
+            switch (profitable) {
+                case 1: return res.andWhere('tr.type = true').getRawMany();
+                case 2: return res.andWhere('tr.type = false').getRawMany();
+            }
+
+            return res.getRawMany();
         } catch (err) {
             throw new HttpException('wrong query', HttpStatus.BAD_REQUEST)
         }
